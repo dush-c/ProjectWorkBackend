@@ -1,0 +1,304 @@
+openapi: 3.0.1
+info:
+  title: BackEnd
+  version: '1.0'
+servers:
+  - url: https://backend20240920102207.azurewebsites.net/
+paths:
+  /Registrazione:
+    post:
+      tags:
+        - Auth
+      parameters:
+        - name: confermaPassword
+          in: query
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Utente'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Utente'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Utente'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ResponseRegistrazione'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseRegistrazione'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ResponseRegistrazione'
+  /Login:
+    post:
+      tags:
+        - Auth
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: password
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  /AggiornaPassword:
+    put:
+      tags:
+        - Auth
+      parameters:
+        - name: contoCorrenteID
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: oldPassword
+          in: query
+          schema:
+            type: string
+        - name: newPassword
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  /EmailConferma:
+    post:
+      tags:
+        - Auth
+      parameters:
+        - name: ContoCorrenteID
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  /debug:
+    get:
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+            application/json:
+              schema:
+                type: string
+            text/json:
+              schema:
+                type: string
+  /api/Movimenti/{contoCorrenteID}:
+    get:
+      tags:
+        - Movimenti
+      parameters:
+        - name: contoCorrenteID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: 'n'
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: format
+          in: query
+          schema:
+            type: string
+            default: json
+      responses:
+        '200':
+          description: Success
+  /api/Movimenti/CategoriaMovimento/{contoCorrenteID}/{categoriaID}/{n}:
+    get:
+      tags:
+        - Movimenti
+      parameters:
+        - name: contoCorrenteID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: categoriaID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: 'n'
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: format
+          in: query
+          schema:
+            type: string
+            default: json
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+  /api/Movimenti/MovimentiTraDate/{contoCorrenteID}:
+    get:
+      tags:
+        - Movimenti
+      parameters:
+        - name: contoCorrenteID
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: dataInizio
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: dataFine
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: 'n'
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: format
+          in: query
+          schema:
+            type: string
+            default: json
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseMovimento'
+components:
+  schemas:
+    ResponseMovimento:
+      type: object
+      properties:
+        data:
+          type: string
+          format: date-time
+        importo:
+          type: number
+          format: double
+        nomeCategoria:
+          type: string
+          nullable: true
+        saldo:
+          type: number
+          format: double
+          nullable: true
+      additionalProperties: false
+    ResponseRegistrazione:
+      type: object
+      properties:
+        messaggio:
+          type: string
+          nullable: true
+        contoCorrenteID:
+          type: integer
+          format: int32
+          nullable: true
+      additionalProperties: false
+    Utente:
+      type: object
+      properties:
+        email:
+          type: string
+          nullable: true
+        password:
+          type: string
+          nullable: true
+        nomeTitolare:
+          type: string
+          nullable: true
+        cognomeTitolare:
+          type: string
+          nullable: true
+      additionalProperties: false
