@@ -1,8 +1,9 @@
 import nodemailer from 'nodemailer';
+import jwt from 'jsonwebtoken';
 
-export const sendConfirmationEmail = async (email: string) => {
+export const sendConfirmationEmail = async (email: string, userId: string) => {
 
-    console.log("email: ", email);
+    const token = jwt.sign({ userId }, 'cicciopasticcio', { expiresIn: '1h' });
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -16,8 +17,7 @@ export const sendConfirmationEmail = async (email: string) => {
         from: 'meneghellogiovanni88@gmail.com',
         to: email,
         subject: 'Email Confirmation',
-        text: 'Link alla pagina Angular per la conferma'
-        //email-confirmed
+        text: `Click this link to confirm your email: http://localhost:4200/email-confirmed?token=${token}`       //email-confirmed
     };
 
     await transporter.sendMail(mailOptions);
