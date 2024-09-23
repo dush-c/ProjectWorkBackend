@@ -12,6 +12,7 @@ import * as jwt from "jsonwebtoken";
 import contoCorrenteService from "../contoCorrente/contoCorrente.service";
 import { ContoCorrente } from "../contoCorrente/controCorrente.entity";
 import generateIBAN from "../services/functions/generateIBAN.function";
+import { sendConfirmationEmail } from "../services/email.service";
 
 export const add = async (
   req: TypedRequest<AddUserDTO>,
@@ -44,7 +45,7 @@ export const add = async (
     const newConto = await contoCorrenteService.add(newUser, contoData);
 
     const createdUser = await userService.updateId(newUser.id!, newConto.id!);
-
+    sendConfirmationEmail(createdUser.email);
     res.send(createdUser);
   } catch (err) {
     if (err instanceof UserExistsError) {

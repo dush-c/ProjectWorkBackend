@@ -10,7 +10,7 @@ export const userSchema = new mongoose.Schema<iUser>({
 });
 
 
-userSchema.virtual("isExpired").get(function () {
+userSchema.virtual("isConfirmed").get(function () {
     return false;
   });
 
