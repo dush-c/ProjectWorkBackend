@@ -8,12 +8,12 @@ import { UserExistsError } from "../../errors/user-exist";
 export class UserService {
   async add(
     user: User,
-    credentials: { username: string; password: string }
+    credentials: { email: string; password: string }
   ): Promise<User> {
 
     
     const existingIdentity = await UserIdentity.findOne({
-      "credentials.username": credentials.username,
+      "credentials.username": credentials.email,
     });
 
     if (existingIdentity) {
@@ -27,7 +27,7 @@ export class UserService {
       provider: "local",
       user: newUser._id,
       credentials: {
-        username: credentials.username,
+        username: credentials.email,
         hashedPassword,
       },
     });
