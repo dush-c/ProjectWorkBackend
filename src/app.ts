@@ -4,6 +4,10 @@ import morgan from 'morgan';
 import apiRouter from './api/routes';
 import bodyParser from 'body-parser';
 
+import passport from "passport";
+import "./utils/auth/auth.handlers";
+
+
 const app = express();
 
 app.use(cors());
