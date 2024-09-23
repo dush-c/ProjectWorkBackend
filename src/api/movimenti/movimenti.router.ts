@@ -1,15 +1,15 @@
 import { Router } from 'express';
-import MovimentiController from './movimenti.controller';
+import {getMovimenti, getMovimentiPerCategoria, getMovimentiTraDate} from './movimenti.controller';
 
 const router = Router();
 
 // Rotta per ottenere movimenti per conto corrente
-router.get('/:contoCorrenteID', MovimentiController.getMovimenti);
+router.get('/:contoCorrenteID', getMovimenti);
 
 // Rotta per ottenere movimenti per categoria
-router.get('/categoriaMovimento/:contoCorrenteID/:categoriaID', MovimentiController.getMovimentiPerCategoria);
+router.get('/categoriaMovimento/:contoCorrenteID/:categoriaID', getMovimentiPerCategoria);
 
 // Rotta per ottenere movimenti tra date
-router.get('/movimentiTraDate/:contoCorrenteID', MovimentiController.getMovimentiTraDate);
+router.get('/movimentiTraDate/:contoCorrenteID', getMovimentiTraDate);
 
 export default router;
