@@ -7,11 +7,11 @@ export class AddUserDTO {
   @IsString()
   lastName: string;
 
-//   @IsUrl()
-//   picture: string;
+  @IsUrl()
+  picture: string;
 
-  @IsEmail()
-  username: string;
+  // @IsEmail()
+  email: string;
 
   @MinLength(8)
   // @Matches(new RegExp("^(?=.*d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$"), {

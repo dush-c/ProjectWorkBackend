@@ -10,9 +10,12 @@ export class UserService {
     user: User,
     credentials: { username: string; password: string }
   ): Promise<User> {
+
+    
     const existingIdentity = await UserIdentity.findOne({
       "credentials.username": credentials.username,
     });
+
     if (existingIdentity) {
       throw new UserExistsError();
     }
@@ -35,6 +38,18 @@ export class UserService {
   async list(): Promise<User[]> {
     const userList = await UserModel.find();
     return userList;
+  }
+
+  async updateId(userId: string, contoId: string): Promise<User>{
+    
+    const user = await UserModel.findOne({ _id: userId, })
+    // Step 6: Update the user with 'contoCorrenteId'
+    user!.contoCorrenteId = contoId; 
+
+    // Step 7: Save the updated user
+    return await user!.save();
+
+
   }
 }
 

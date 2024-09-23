@@ -2,11 +2,16 @@ import { NextFunction, Request, Response } from "express";
 import { TypedRequest } from "../../utils/typed-request.interface";
 import { AddUserDTO } from "./auth.dto";
 import { omit, pick } from "lodash";
+// import { UserExistsError } from "../../errors/user-exists";
 import userService from "../user/user.service";
 import { UserExistsError } from "../../errors/user-exist";
 import passport from "passport";
 const JWT_SECRET = "my_jwt_secret";
 import * as jwt from "jsonwebtoken";
+
+import contoCorrenteService from "../contoCorrente/contoCorrente.service";
+import { ContoCorrente } from "../contoCorrente/controCorrente.entity";
+import generateIBAN from "../services/functions/generateIBAN.function";
 
 export const add = async (
   req: TypedRequest<AddUserDTO>,
@@ -14,16 +19,32 @@ export const add = async (
   next: NextFunction
 ) => {
   try {
-    // Include required fields such as 'isConfirmed' and 'contoCorrenteId'
+    // Include all user data required for the userService, omit only the password
     const userData = {
-      ...omit(req.body, "username", "password"),
-      isConfirmed: false,  // Or true, depending on your logic
-      contoCorrenteId: "default-id",  // Example, replace with actual logic
+      ...omit(req.body, "password"), // We include 'email' and other data but omit 'password'
+      isConfirmed: false,
+      picture: req.body.picture
     };
 
-    const credentials = pick(req.body, "username", "password");
+    // Create credentials with both email (as username) and password
+    const credentials = {
+      username: req.body.email, // Assuming email is used as username
+      password: req.body.password,
+    };
     const newUser = await userService.add(userData, credentials);
-    res.send(newUser);
+    //dopo aver creato l'utente bisogna andarea a creare il conto corrente
+    const contoData: ContoCorrente = {
+      email: req.body.email,
+      nomeTitolare: req.body.firstName,
+      cognomeTitolare: req.body.lastName,
+      password: req.body.password,
+      IBAN: generateIBAN(),
+    };
+    const newConto = await contoCorrenteService.add(newUser, contoData);
+
+    const createdUser = await userService.updateId(newUser.id!, newConto.id!);
+
+    res.send(createdUser);
   } catch (err) {
     if (err instanceof UserExistsError) {
       res.status(400);
@@ -32,7 +53,7 @@ export const add = async (
       next(err);
     }
   }
-};
+}
 
 export const login = async (
   req: Request,
@@ -68,4 +89,4 @@ export const login = async (
   } catch (e) {
     next(e);
   }
-};
+}
