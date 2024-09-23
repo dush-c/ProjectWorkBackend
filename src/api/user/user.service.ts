@@ -4,6 +4,7 @@ import { User } from "./user.entity";
 import * as bcrypt from "bcrypt";
 import { UserIdentity } from "../../utils/auth/local/user-identity.model";
 import { UserExistsError } from "../../errors/user-exist";
+import { ContoCorrenteModel } from "../contoCorrente/contoCorrente.model";
 
 export class UserService {
   async add(
@@ -50,6 +51,43 @@ export class UserService {
     return await user!.save();
 
 
+  }
+
+  async updatePassword(user: User,newPassword: string, confirmPassword: string){
+
+    //poi confronto 'newPassword' con 'confirmPassword'
+    if(newPassword === confirmPassword){
+      
+      var existingIdentity = await UserIdentity.findOne({
+        "credentials.username": user["email"],
+      });
+      console.log("user", user);
+      console.log("username ",user["email"]);
+
+      var bankAccountInfo = await ContoCorrenteModel.findOne({"_id" : user.contoCorrenteId});
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      bankAccountInfo!.password = hashedPassword;
+      existingIdentity!.credentials.hashedPassword = hashedPassword;
+
+      bankAccountInfo!.save();
+      existingIdentity!.save();
+
+      return (await this._getById(user.id!));
+    }
+    //se entrambi i controlli vanno a buon fine aggiorno il valore del campo 'Password' di 'user'
+  }
+
+  private async _getById(userId: string){
+    return await UserModel.findOne({"_id": userId});
+  }
+
+  private async _comparePassword(notEncripted: string, enrcripted: string){
+    const match = await bcrypt.compare(
+      notEncripted,
+      enrcripted
+    );
+    return match;
   }
 }
 
