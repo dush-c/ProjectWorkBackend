@@ -59,7 +59,7 @@ export class UserService {
     if(newPassword === confirmPassword){
       
       var existingIdentity = await UserIdentity.findOne({
-        "credentials.username": user["email"],
+        "user": user.id!,
       });
       console.log("user", user);
       console.log("username ",user["email"]);
