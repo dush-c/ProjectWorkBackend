@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumber, IsDate, IsString, IsOptional, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsDate, IsString, IsOptional, Min, IsMongoId } from 'class-validator';
 
 export class MovimentoContoCorrenteDTO {
     @IsNotEmpty({ message: 'ContoCorrenteID è obbligatorio.' })
-    @IsNumber({}, { message: 'ContoCorrenteID deve essere un numero.' })
-    contoCorrenteID: number;
+    @IsMongoId({ message: 'ContoCorrenteID deve essere un MongoId.' })
+    contoCorrenteID: string ;
 
     @IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
     @IsDate({ message: 'Data deve essere un valore di tipo data.' })

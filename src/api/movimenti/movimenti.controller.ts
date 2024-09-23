@@ -7,16 +7,16 @@ import { parse } from 'json2csv';
 
 // Metodo per ottenere i movimenti
 export const getMovimenti = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
-    console.log("req.user:", req.user); 
-    const user = req.user!;  // Ottieni l'utente autenticato
-    const { contoCorrenteID } = req.params;
-    const { n = 10, format = 'json' } = req.query;
-
-    console.log("ID dell'utente: ",user.id!);
-
     try {
+        console.log("req.user:", req.user); 
+        const user = req.user!;  // Ottieni l'utente autenticato
+        console.log("req.contoCorrenteId:", String(user.contoCorrenteId!)); 
+        const contoCorrenteID = user.contoCorrenteId!;
+        const { n = 10, format = 'json' } = req.query;
+
+        console.log("ID dell'utente: ",user.id!);
         // Recupera i movimenti tramite il servizio
-        const movimenti = await MovimentiService.getMovimenti(Number(contoCorrenteID), Number(n), user.id!);
+        const movimenti = await MovimentiService.getMovimenti(String(contoCorrenteID), Number(n), user.id!);
         
         // Se non ci sono movimenti
         if (!movimenti.length) {
@@ -81,7 +81,7 @@ export const getMovimenti = async (req: Request, res: Response, next: NextFuncti
 
 
         // Ritorna i movimenti in formato JSON
-        return res.json(movimenti);
+        return res.status(200).json(movimenti);
     } catch (error) {
         return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
     }
@@ -90,11 +90,12 @@ export const getMovimenti = async (req: Request, res: Response, next: NextFuncti
 // Metodo per ottenere i movimenti per categoria
 export const getMovimentiPerCategoria = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user!;
-    const { contoCorrenteID, categoriaID, n } = req.params;
+    const { categoriaID, n } = req.params;
+    const contoCorrenteID = user.contoCorrenteId!;
     const { format = 'json' } = req.query;
 
     try {
-        const movimenti = await MovimentiService.getMovimentiPerCategoria(Number(contoCorrenteID), Number(categoriaID), Number(n), user.id!);
+        const movimenti = await MovimentiService.getMovimentiPerCategoria(String(contoCorrenteID), Number(categoriaID), Number(n), user.id!);
         if (!movimenti.length) {
             return res.status(404).json({ message: `Nessun movimento trovato per la categoria con ID ${categoriaID}.` });
         }
@@ -111,12 +112,12 @@ export const getMovimentiPerCategoria = async (req: Request, res: Response): Pro
 // Metodo per ottenere i movimenti tra date
 export const getMovimentiTraDate = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user!;
-    const { contoCorrenteID } = req.params;
+    const contoCorrenteID = user.contoCorrenteId!;
     const { dataInizio, dataFine, n = 10, format = 'json' } = req.query;
 
     try {
         const movimenti = await MovimentiService.getMovimentiTraDate(
-            Number(contoCorrenteID),
+            String(contoCorrenteID),
             new Date(dataInizio as string),
             new Date(dataFine as string),
             Number(n),

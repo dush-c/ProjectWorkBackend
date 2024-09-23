@@ -48,8 +48,6 @@ export class UserService {
 
     // Step 7: Save the updated user
     return await user!.save();
-
-
   }
 }
 
