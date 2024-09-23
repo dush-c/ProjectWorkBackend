@@ -4,7 +4,7 @@ import { User as iUser } from "./user.entity";
 export const userSchema = new mongoose.Schema<iUser>({
   firstName: String,
   lastName: String,
-  email: String,
+  username: String,
   picture: String,
   contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", default: null }, //TODO: sistemare il tipo di contoCorrenteId
 });

@@ -5,7 +5,7 @@ export interface User {
     firstName: string;
     lastName: string;
     picture: string;
-    email: string;
+    username: string;
     isConfirmed: boolean;
     contoCorrenteId?: string | Types.ObjectId;
 }  

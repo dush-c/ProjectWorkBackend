@@ -31,11 +31,11 @@ export const add = async (
     //   username: req.body.email, // Assuming email is used as username
     //   password: req.body.password,
     // };
-    const credentials = pick(req.body, "email", "password");
+    const credentials = pick(req.body, "username", "password");
     const newUser = await userService.add(userData, credentials);
     //dopo aver creato l'utente bisogna andarea a creare il conto corrente
     const contoData: ContoCorrente = {
-      email: req.body.email,
+      username: req.body.username,
       nomeTitolare: req.body.firstName,
       cognomeTitolare: req.body.lastName,
       password: req.body.password,

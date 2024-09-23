@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { ContoCorrente as iContoCorrente } from "./controCorrente.entity";
 export const contoSchema = new mongoose.Schema<iContoCorrente>({
-    email: { type: String },
+    username: { type: String },
     nomeTitolare: { type: String },
     cognomeTitolare: { type: String },
     password: { type: String},

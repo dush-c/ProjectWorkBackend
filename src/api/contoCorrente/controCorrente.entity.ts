@@ -1,6 +1,6 @@
 export interface ContoCorrente{
     id?: string;
-    email: string;
+    username: string;
     password: string;
     cognomeTitolare: string;
     nomeTitolare: string;
