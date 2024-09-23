@@ -14,6 +14,11 @@ export class ContoCorrenteService {
   private async _getById(itemId: string) {
     return ContoCorrenteModel.findOne({ _id: itemId});
   }
+
+  async info(user: User){
+    const contoCorrente = await this._getById(user.contoCorrenteId!.toString());
+    return contoCorrente;
+  }
 }
 
 

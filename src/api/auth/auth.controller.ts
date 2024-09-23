@@ -46,7 +46,7 @@ export const add = async (
 
     const createdUser = await userService.updateId(newUser.id!, newConto.id!);
 
-    sendConfirmationEmail(createdUser.email, createdUser.id!);
+    sendConfirmationEmail(createdUser.username, createdUser.id!);
     
     res.send(createdUser);
   } catch (err) {
