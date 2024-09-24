@@ -13,6 +13,7 @@ import contoCorrenteService from "../contoCorrente/contoCorrente.service";
 import { ContoCorrente } from "../contoCorrente/controCorrente.entity";
 import { sendConfirmationEmail } from "../services/email.service";
 import generateIBAN from "../services/functions/generateIBAN.function";
+import logService from "../services/logs/log.service";
 
 export const add = async (
   req: TypedRequest<AddUserDTO>,
@@ -68,10 +69,12 @@ export const login = async (
     const authMiddleware = passport.authenticate("local", (err, user, info) => {
       if (err) {
         next(err);
+        logService.add("Login Error", false);
         return;
       }
 
       if (!user) {
+        logService.add(`Login - ${info.message}`, false);
         res.status(401);
         res.json({
           error: "LoginError",
@@ -81,6 +84,7 @@ export const login = async (
       }
 
       const token = jwt.sign(user, JWT_SECRET, { expiresIn: "7 days" });
+      logService.add("Login", true);
 
       res.status(200);
       res.json({
