@@ -5,6 +5,6 @@ import { isAuthenticated } from "../../utils/auth/authenticated-middleware";
 const router = Router();
 
 router.get("/me", isAuthenticated, me);
-router.get("/email-confirmation", confirmEmail);
+router.post("/email-confirmation", confirmEmail);
 router.put("/updatePassword",isAuthenticated, updatePassword);
 export default router;

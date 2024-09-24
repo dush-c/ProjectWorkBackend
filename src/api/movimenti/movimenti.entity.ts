@@ -1,11 +1,11 @@
 import { Types } from 'mongoose';
 
 export interface MovimentoContoCorrente {
-    contoCorrenteID: string;
+    contoCorrenteID: string | Types.ObjectId;
     data: Date;
     importo: number;
     saldo: number;
-    categoriaMovimentoID: number;
+    categoriaMovimentoID: string | Types.ObjectId;
     descrizioneEstesa?: string;
 }
 

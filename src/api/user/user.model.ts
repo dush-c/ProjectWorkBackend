@@ -6,7 +6,7 @@ export const userSchema = new mongoose.Schema<iUser>({
   lastName: String,
   username: String,
   picture: String,
-  contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", default: null },
+  contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "BankAccount", default: null },
 });
 
 

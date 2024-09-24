@@ -4,6 +4,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { TypedRequest } from "../../utils/typed-request";
 import { UserModel } from "./user.model";
 import { User } from "./user.entity";
+import { MovimentoContoCorrente } from "../movimenti/movimenti.entity";
 
 export const me = async (
   req: TypedRequest,
@@ -37,7 +38,19 @@ export const confirmEmail = async (
     user.isConfirmed = true;
     await user.save();
     //here i have to add the code for the creation of the record in the TMovimentiContoCorrente
-    //TODO: aggiungere record nella collecition moviments
+    //TODO: aggiungere record nella collecition movements
+
+    const contoId = user.contoCorrenteId;
+    const aperturaConto: MovimentoContoCorrente = {
+      categoriaMovimentoID: "66f180ef3af4b7f8c8ca9184",
+      contoCorrenteID: contoId!,
+      data: new Date(),
+      importo: 0,
+      saldo: 0,
+      descrizioneEstesa: "Apertura Conto"
+
+    }
+
     return res.status(200).send("Email confirmed successfully");
   } catch (err) {
     return res.status(400).send("Invalid or expired token");

@@ -2,11 +2,11 @@ import mongoose, { Schema, Document, Types } from 'mongoose';
 
 // Definisci l'interfaccia per il documento MovimentoContoCorrente
 export interface IMovimentoContoCorrente extends Document{
-    contoCorrenteID: Types.ObjectId ;
+    contoCorrenteID: { type: mongoose.Schema.Types.ObjectId, ref: "BankAccount", default: null }
     data: Date;
     importo: number;
     saldo: number;
-    categoriaMovimentoID: Types.ObjectId;
+    categoriaMovimentoID:{ type: mongoose.Schema.Types.ObjectId, ref: "CategoriaMovimenti", default: null }
     descrizioneEstesa?: string;
 }
 
