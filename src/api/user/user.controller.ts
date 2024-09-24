@@ -5,6 +5,7 @@ import { TypedRequest } from "../../utils/typed-request";
 import { UserModel } from "./user.model";
 import { User } from "./user.entity";
 import { MovimentoContoCorrente } from "../movimenti/movimenti.entity";
+import { MovimentoModel } from "../movimenti/movimenti.model";
 
 export const me = async (
   req: TypedRequest,
@@ -40,16 +41,23 @@ export const confirmEmail = async (
     //here i have to add the code for the creation of the record in the TMovimentiContoCorrente
     //TODO: aggiungere record nella collecition movements
 
-    const contoId = user.contoCorrenteId;
+    const contoId = user.contoCorrenteId!;
+    // console.log("user", user);
+
+    // console.log("contoID: ", contoId);
+
     const aperturaConto: MovimentoContoCorrente = {
       categoriaMovimentoID: "66f180ef3af4b7f8c8ca9184",
-      contoCorrenteID: contoId!,
+      contoCorrenteID: contoId.toString(),
       data: new Date(),
       importo: 0,
       saldo: 0,
       descrizioneEstesa: "Apertura Conto"
-
     }
+
+    console.log("Apertura conto",aperturaConto);
+    
+    await MovimentoModel.create(aperturaConto);
 
     return res.status(200).send("Email confirmed successfully");
   } catch (err) {
