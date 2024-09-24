@@ -6,7 +6,7 @@ import { UserIdentity } from "../../utils/auth/local/user-identity.model";
 import { UserExistsError } from "../../errors/user-exist";
 import { ContoCorrenteModel } from "../contoCorrente/contoCorrente.model";
 import { PasswordMismatchError, SamePasswordError } from "../../errors/password";
-
+import {ContoCorrente} from "../contoCorrente/controCorrente.entity";
 export class UserService {
   async add(
     user: User,

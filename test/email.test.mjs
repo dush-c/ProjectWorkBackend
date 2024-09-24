@@ -1,33 +1,34 @@
-import nodemailer from 'nodemailer';
-import jwt from 'jsonwebtoken';
-import path from 'path';
+import nodemailer from "nodemailer";
+import jwt from "jsonwebtoken";
+import path from "path";
 
-export const sendConfirmationEmail = async (email: string, userId: string) => {
+export const sendConfirmationEmail = async (email, userId) => {
+  
 
-    const token = jwt.sign({ userId }, 'cicciopasticcio', { expiresIn: '1h' });
+  const token = jwt.sign({ userId }, "cicciopasticcio", { expiresIn: "1h" });
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: 'noreply.fifthpocket@gmail.com',
-            pass: 'rzsw uomn alwl nscm'
-        }
-    });
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "noreply.fifthpocket@gmail.com",
+      pass: "rzsw uomn alwl nscm",
+    },
+  });
 
-    const mailOptions = {
-        from: 'noreply.fifthpocket@gmail.com',
-        to: email,
-        subject: 'Email Confirmation',
-        text: "errore",
-        attachments: [
-          {
-            filename: 'LogoPW1.webp',
-            path: "logo.webp", // Percorso al file del logo
-            cid: 'logo' // Deve corrispondere a "cid:logo" nel template HTML
-          }
-        ],
-      
-             html: `<!DOCTYPE html>
+  const mailOptions = {
+    from: "noreply.fifthpocket@gmail.com",
+    to: email,
+    subject: "Email Confirmation",
+    text: "errore",
+    attachments: [
+      {
+        filename: "LogoPW1.webp",
+        path: "logo.webp", // Percorso al file del logo
+        cid: "logo", // Deve corrispondere a "cid:logo" nel template HTML
+      },
+    ],
+
+    html: `<!DOCTYPE html>
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
@@ -126,10 +127,12 @@ export const sendConfirmationEmail = async (email: string, userId: string) => {
       </div>
     </div>
   </body>
-</html>`
-        
-        //email-confirmed
-    };
+</html>`,
+  };
 
-    await transporter.sendMail(mailOptions);
+  await transporter.sendMail(mailOptions);
 };
+
+var email = "sergio.meneguzzo@itsdigitalacademy.com";
+var userId = "66f2b56bde9d5da61979b529";
+sendConfirmationEmail(email, userId);
