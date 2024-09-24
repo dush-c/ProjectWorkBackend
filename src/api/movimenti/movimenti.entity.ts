@@ -5,7 +5,7 @@ export interface MovimentoContoCorrente {
     data: Date;
     importo: number;
     saldo: number;
-    categoriaMovimentoID: number;
+    categoriaMovimentoID: string;
     descrizioneEstesa?: string;
 }
 

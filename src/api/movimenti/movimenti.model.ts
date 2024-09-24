@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 // Definisci l'interfaccia per il documento MovimentoContoCorrente
-export interface IMovimentoContoCorrente extends Document{
+export interface IMovimentoContoCorrente{
     contoCorrenteID: Types.ObjectId ;
     data: Date;
     importo: number;
@@ -12,7 +12,7 @@ export interface IMovimentoContoCorrente extends Document{
 
 // Schema di Mongoose
 const MovimentoContoCorrenteSchema: Schema = new Schema({
-    contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", default: null },
+    contoCorrenteID: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", require:true },
     data: { type: Date, required: true },
     importo: { type: Number, required: true },
     saldo: { type: Number, required: true },

@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsDate, IsString, IsOptional, Min, IsMongoId } from 'class-validator';
 
 export class MovimentoContoCorrenteDTO {
-    @IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
-    @IsMongoId({ message: 'ContoCorrenteID deve essere un MongoId.' })
-    contoCorrenteID: string ;
+    //@IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
+    @IsMongoId({ message: 'contoCorrenteID deve essere un MongoId.' })
+    contoCorrenteID: string;
 
     @IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
     @IsDate({ message: 'Data deve essere un valore di tipo data.' })
@@ -11,7 +11,6 @@ export class MovimentoContoCorrenteDTO {
 
     @IsNotEmpty({ message: 'L\'importo è obbligatorio.' })
     @IsNumber({}, { message: 'Importo deve essere un numero.' })
-    @Min(0, { message: 'L\'importo deve essere maggiore o uguale a 0.' })
     importo: number;
 
     //@IsNotEmpty({ message: 'Il saldo è obbligatorio.' })
@@ -20,10 +19,17 @@ export class MovimentoContoCorrenteDTO {
     saldo: number;
 
     @IsNotEmpty({ message: 'La categoria movimento ID è obbligatoria.' })
-    @IsMongoId({ message: 'ContoCorrenteID deve essere un MongoId.' })
+    @IsMongoId({ message: 'categoriaMovimentoID deve essere un MongoId.' })
     categoriaMovimentoID: number;
 
     @IsOptional()
     @IsString({ message: 'Descrizione estesa deve essere una stringa.' })
     descrizioneEstesa?: string;
+
+    // Metodo per aggiornare contoCorrenteID
+    public setContoCorrenteID(newID: string): void {
+        this.contoCorrenteID = newID;
+    }
 }
+
+
