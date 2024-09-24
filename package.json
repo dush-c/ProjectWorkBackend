@@ -22,6 +22,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@angular/core": "^18.2.5",
     "@types/bcryptjs": "^2.4.6",
     "@types/mssql": "^9.1.5",
     "@types/node": "^22.5.5",
@@ -33,6 +34,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "cors": "^2.8.5",
+    "exceljs": "^4.4.0",
     "express": "^4.21.0",
     "ip": "^2.0.1",
     "jsonwebtoken": "^9.0.1",

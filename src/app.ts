@@ -11,6 +11,8 @@ import "./utils/auth/auth.handlers";
 
 const app = express();
 
+//populateDatabase();
+
 app.use(cors());
 app.use(morgan('tiny'));
 app.use(bodyParser.json());
