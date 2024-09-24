@@ -1,6 +1,6 @@
 import passport from "passport";
 import { ExtractJwt, Strategy as JwtStrategy } from "passport-jwt";
-import { User as UserModel } from "../../../api/user/user.model";
+import { UserModel } from "../../../api/user/user.model";
 
 export const JWT_SECRET = "my_jwt_secret";
 

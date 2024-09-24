@@ -5,12 +5,9 @@ import apiRouter from './api/routes';
 import bodyParser from 'body-parser';
 
 import passport from "passport";
-import "./utils/auth/auth.handlers";
-
-
+// import "./utils/auth/auth.handlers";
+import "./utils/auth/auth-handlers"
 const app = express();
-
-//populateDatabase();
 
 app.use(cors());
 app.use(morgan('tiny'));

@@ -3,13 +3,13 @@ import MovimentiService from './movimenti.service';
 import { MovimentoContoCorrenteDTO } from './movimenti.dto'; // Import del DTO
 //import { validate } from 'class-validator'; // Per eseguire la validazione dei dati di input
 import { Workbook } from 'exceljs';
-import { parse } from 'json2csv';
 import { validate } from 'class-validator';
+import { User } from '../user/user.entity';
 
 // Metodo per ottenere i movimenti
 export const getMovimenti = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
     try { 
-        const user = req.user!;  // Ottieni l'utente autenticato
+        const user = req.user! as User;  // Ottieni l'utente autenticato
         console.log("Conto corrente id: ", String(user.contoCorrenteId))
         const { n = 10, format = 'json' } = req.query;
 
@@ -31,7 +31,7 @@ export const getMovimenti = async (req: Request, res: Response, next: NextFuncti
 
 // Metodo per ottenere i movimenti per categoria
 export const getMovimentiPerCategoria = async (req: Request, res: Response): Promise<Response> => {
-    const user = req.user!;
+    const user = req.user! as User;
     const { categoriaID} = req.params;
     const { n = 10, format = 'json' } = req.query;
 
@@ -52,7 +52,7 @@ export const getMovimentiPerCategoria = async (req: Request, res: Response): Pro
 
 // Metodo per ottenere i movimenti tra date
 export const getMovimentiTraDate = async (req: Request, res: Response): Promise<Response> => {
-    const user = req.user!;
+    const user = req.user! as User;
     const contoCorrenteID = user.contoCorrenteId!;
     const { dataInizio, dataFine, n = 10, format = 'json' } = req.query;
 
@@ -78,29 +78,29 @@ export const getMovimentiTraDate = async (req: Request, res: Response): Promise<
     }
 }
 
-// Metodo per creare un nuovo movimento
-export const createMovimento2 = async (req: Request, res: Response): Promise<Response> => {
-    const user = req.user!;
-    const movimentoDTO = new MovimentoContoCorrenteDTO();
-    Object.assign(movimentoDTO, req.body);
+// // Metodo per creare un nuovo movimento
+// export const createMovimento2 = async (req: Request, res: Response): Promise<Response> => {
+//     const user = req.user! ;
+//     const movimentoDTO = new MovimentoContoCorrenteDTO();
+//     Object.assign(movimentoDTO, req.body);
 
-    // Validazione del DTO
-     const validationErrors = await validate(movimentoDTO);
-     if (validationErrors.length > 0) {
-         const errors = validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
-         return res.status(400).json({ message: 'Errore di validazione', errors });
-     }
+//     // Validazione del DTO
+//      const validationErrors = await validate(movimentoDTO);
+//      if (validationErrors.length > 0) {
+//          const errors = validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
+//          return res.status(400).json({ message: 'Errore di validazione', errors });
+//      }
 
-    try {
-        const nuovoMovimento = await MovimentiService.createMovimento(movimentoDTO, String(user.contoCorrenteId!), user.id!);
-        return res.status(201).json(nuovoMovimento);
-    } catch (error) {
-        return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
-    }
-}
+//     try {
+//         const nuovoMovimento = await MovimentiService.createMovimento(movimentoDTO, String(user.contoCorrenteId!), user.id!);
+//         return res.status(201).json(nuovoMovimento);
+//     } catch (error) {
+//         return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
+//     }
+// }
 
 export const createMovimento = async (req: Request, res: Response): Promise<Response> => {
-    const user = req.user!;  // Prende l'utente autenticato
+    const user = req.user! as User;  // Prende l'utente autenticato
 
     console.log("Raw contoCorrenteId from user:", user!.contoCorrenteId);
     console.log("Tipo di contoCorrenteId:", typeof(user!.contoCorrenteId));

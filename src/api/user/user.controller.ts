@@ -1,8 +1,9 @@
 import { NextFunction, Response, Request } from "express";
 import userService from "./user.service";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { User } from "./user.model";
 import { TypedRequest } from "../../utils/typed-request";
+import { UserModel } from "./user.model";
+import { User } from "./user.entity";
 
 export const me = async (
   req: TypedRequest,
@@ -28,7 +29,7 @@ export const confirmEmail = async (
     const { userId } = jwt.verify(token, "cicciopasticcio") as JwtPayload;
 
     // Find the user and confirm their email
-    const user = await User.findById(userId);
+    const user = await UserModel.findById(userId);
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -49,7 +50,7 @@ export const updatePassword = async (
   next: NextFunction
 ) => {
   try {
-    const user = req.user!;
+    const user = req.user! as User;
 
     const { newPassword, confirmPassword } = req.body;
 

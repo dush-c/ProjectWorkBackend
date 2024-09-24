@@ -6,7 +6,7 @@ export const userSchema = new mongoose.Schema<iUser>({
   lastName: String,
   username: String,
   picture: String,
-  contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", default: null }, //TODO: sistemare il tipo di contoCorrenteId
+  contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "ContoCorrente", default: null },
 });
 
 
@@ -33,4 +33,4 @@ userSchema.set("toObject", {
   },
 });
 
-export const User = mongoose.model<iUser>("User", userSchema);
+export const UserModel = mongoose.model<iUser>("User", userSchema);

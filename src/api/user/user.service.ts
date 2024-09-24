@@ -1,4 +1,4 @@
-import { User as UserModel } from "./user.model";
+import { UserModel } from "./user.model";
 // import { UserIdentity as UserIdentityModel } from "../../utils/auth/local/user-identity.model";
 import { User } from "./user.entity";
 import * as bcrypt from "bcrypt";

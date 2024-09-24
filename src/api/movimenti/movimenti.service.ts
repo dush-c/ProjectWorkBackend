@@ -1,14 +1,14 @@
 import { MovimentoModel, IMovimentoContoCorrente } from './movimenti.model';
 import { MovimentoContoCorrenteDTO } from './movimenti.dto'; // DTO per la validazione
 import { validate } from 'class-validator'; // Per eseguire la validazione dei dati di input
-import { User } from '../user/user.model';
+import { UserModel } from '../user/user.model';
 
 export class MovimentiService {
     // Metodo per verificare che l'utente sia associato al conto corrente
     private async verificaProprietarioConto(contoCorrenteID: string, userId: string): Promise<boolean> {
         const { ObjectId } = require('mongodb'); 
     
-        const utente = await User.findOne({
+        const utente = await UserModel.findOne({
             contoCorrenteId: new ObjectId(contoCorrenteID),
             _id: new ObjectId(userId)  // Converti userId in ObjectId se necessario
         });

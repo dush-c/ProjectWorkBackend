@@ -3,6 +3,7 @@ import { ContoCorrente } from "./controCorrente.entity";
 import contoService from "./contoCorrente.service";
 import bigInt from "big-integer";
 import contoCorrenteService from "./contoCorrente.service";
+import { User } from "../user/user.entity";
 
 export const add = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,7 +31,7 @@ export const add = async (req: Request, res: Response, next: NextFunction) => {
 
 export const info = async (req: Request, res: Response, next: NextFunction) => {
   //return every information inside the bankaccounts 'table'
-  const user = req.user!;
+  const user = req.user! as User;
 
   const bankAccountInfo = await contoCorrenteService.info(user);
 
