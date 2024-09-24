@@ -1,24 +1,24 @@
 import { BonificoDTO } from './bonifico.dto'; 
 import { ContoCorrenteModel } from '../contoCorrente/contoCorrente.model'; // Modello del conto corrente
-import { LogBonificoModel } from './bonifico.model'; // Entità per il log
 import { MovimentoModel } from '../movimenti/movimenti.model'; // Vecchio modello per movimenti
+import logService from '../services/logs/log.service';
 
 class BonificoService {
     // Metodo per eseguire il bonifico
-    async eseguiBonifico(bonificoDTO: BonificoDTO, ip: string | undefined): Promise<{ success: boolean, message: string }> {
+    async eseguiBonifico(bonificoDTO: BonificoDTO): Promise<{ success: boolean, message: string }> {
         const { ibanDestinatario, ibanMittente, importo } = bonificoDTO;
 
         // Verifica che l'IBAN destinatario esista
         const destinatario = await ContoCorrenteModel.findOne({ IBAN: ibanDestinatario });
         if (!destinatario) {
-            await this.logOperazione(ip, "Fallito: IBAN destinatario non trovato.");
+            logService.add("Transaction Error: IBAN not found", false);
             return { success: false, message: 'IBAN destinatario non trovato.' };
         }
 
         // Verifica che l'IBAN mittente esista
         const mittente = await ContoCorrenteModel.findOne({ IBAN: ibanMittente });
         if (!mittente) {
-            await this.logOperazione(ip, "Fallito: IBAN mittente non trovato.");
+            logService.add("Transaction Error: IBAN not found", false);
             return { success: false, message: 'IBAN mittente non trovato.' };
         }
 
@@ -26,7 +26,7 @@ class BonificoService {
         const ultimoMovimentoMittente = await MovimentoModel.findOne({ contoCorrenteID: mittente._id })
             .sort({ data: -1 }); // Prende l'ultimo movimento in ordine di data
         if (!ultimoMovimentoMittente || ultimoMovimentoMittente.saldo < importo) {
-            await this.logOperazione(ip, "Fallito: Saldo insufficiente.");
+            logService.add("Transaction Error: Insufficent balance", false);
             return { success: false, message: 'Saldo insufficiente.' };
         }
 
@@ -61,18 +61,10 @@ class BonificoService {
         await movimentoDestinatario.save();
 
         // Log dell'operazione
-        await this.logOperazione(ip, "Successo");
+        logService.add("Transaction", true);
         return { success: true, message: 'Bonifico completato con successo.' };
     }
 
-    // Metodo per registrare l'operazione
-    private async logOperazione(ip: string | undefined, esito: string): Promise<void> {
-        const log = new LogBonificoModel();
-        log.indirizzoIP = ip;
-        log.esito = esito;
-        log.dataOra = new Date();
-        await log.save();
-    }
 }
 
 export default new BonificoService();
