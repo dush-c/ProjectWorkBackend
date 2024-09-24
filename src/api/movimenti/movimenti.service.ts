@@ -100,8 +100,17 @@ export class MovimentiService {
             return validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
         }
 
-        // Creazione dell'istanza da salvare nel DB usando l'entity
-        const movimento = new MovimentoModel(movimentoDTO);
+        const { ObjectId } = require('mongodb'); 
+        // Assicurati di avere il campo contoCorrenteID definito nel DTO
+        await movimentoDTO.setContoCorrenteID(String(contoCorrenteID));
+
+        // Crea il movimento utilizzando il DTO
+        const movimento = new MovimentoModel({
+            ...movimentoDTO, // Usa l'operatore spread per copiare i campi dal DTO
+            contoCorrenteID: new ObjectId(contoCorrenteID) // Imposta contoCorrenteID come ObjectId
+        });
+
+        // Salva il movimento
         return await movimento.save();
     }
 }
