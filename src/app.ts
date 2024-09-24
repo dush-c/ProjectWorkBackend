@@ -3,7 +3,6 @@ import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api/routes';
 import bodyParser from 'body-parser';
-import "./utils/auth/auth.handlers";
 
 import passport from "passport";
 import "./utils/auth/auth.handlers";
