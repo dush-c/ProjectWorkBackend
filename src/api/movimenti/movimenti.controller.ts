@@ -4,81 +4,23 @@ import { MovimentoContoCorrenteDTO } from './movimenti.dto'; // Import del DTO
 //import { validate } from 'class-validator'; // Per eseguire la validazione dei dati di input
 import { Workbook } from 'exceljs';
 import { parse } from 'json2csv';
+import { validate } from 'class-validator';
 
 // Metodo per ottenere i movimenti
 export const getMovimenti = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
-    try {
-        console.log("req.user:", req.user); 
+    try { 
         const user = req.user!;  // Ottieni l'utente autenticato
-        console.log("req.contoCorrenteId:", String(user.contoCorrenteId!)); 
-        const contoCorrenteID = user.contoCorrenteId!;
+        console.log("Conto corrente id: ", String(user.contoCorrenteId))
         const { n = 10, format = 'json' } = req.query;
 
         console.log("ID dell'utente: ",user.id!);
         // Recupera i movimenti tramite il servizio
-        const movimenti = await MovimentiService.getMovimenti(String(contoCorrenteID), Number(n), user.id!);
+        const movimenti = await MovimentiService.getMovimenti(String(user.contoCorrenteId), Number(n), user.id!);
         
         // Se non ci sono movimenti
         if (!movimenti.length) {
-            return res.status(404).json({ message: `Nessun movimento trovato per il conto corrente con ID ${contoCorrenteID}.` });
+            return res.status(404).json({ message: `Nessun movimento trovato per il conto corrente con ID ${String(user.contoCorrenteId)}.` });
         }
-
-        // Generazione di Excel
-        if (format === 'excel') {
-            if (Array.isArray(movimenti) && movimenti.length > 0) {
-                const workbook = new Workbook();
-                const worksheet = workbook.addWorksheet('Movimenti');
-
-                // Aggiungi intestazioni
-                worksheet.columns = [
-                    { header: 'ID', key: 'id', width: 10 },
-                    { header: 'Data', key: 'data', width: 20 },
-                    { header: 'Importo', key: 'importo', width: 15 },
-                    { header: 'Saldo', key: 'saldo', width: 15 },
-                    { header: 'Descrizione', key: 'descrizione', width: 30 },
-                ];
-
-                // Aggiungi i movimenti
-                movimenti.forEach(movimento => {
-                    worksheet.addRow({
-                        id: movimento.id,
-                        data: movimento.data.toISOString(), // Assicurati che la data sia in formato leggibile
-                        importo: movimento.importo,
-                        saldo: movimento.saldo,
-                        descrizione: movimento.descrizioneEstesa,
-                    });
-                });
-
-                // Restituisci il file Excel
-                res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                res.setHeader('Content-Disposition', 'attachment; filename=movimenti.xlsx');
-
-                await workbook.xlsx.write(res);
-                return res.end();
-            } else {
-                return res.status(404).json({ message: 'Nessun movimento trovato.' });
-            }
-        }
-
-        // Generazione di CSV
-        if (format === 'csv') {
-            if (Array.isArray(movimenti) && movimenti.length > 0) {
-                const csv = parse(movimenti.map(movimento => ({
-                    id: movimento.id,
-                    data: movimento.data.toISOString(), // Assicurati che la data sia in formato leggibile
-                    importo: movimento.importo,
-                    saldo: movimento.saldo,
-                    descrizione: movimento.descrizioneEstesa,
-                })));
-
-                res.setHeader('Content-Type', 'text/csv');
-                res.setHeader('Content-Disposition', 'attachment; filename=movimenti.csv');
-                return res.send(csv);
-            } else {
-                return res.status(404).json({ message: 'Nessun movimento trovato.' });
-            }
-        }
-
 
         // Ritorna i movimenti in formato JSON
         return res.status(200).json(movimenti);
@@ -90,12 +32,11 @@ export const getMovimenti = async (req: Request, res: Response, next: NextFuncti
 // Metodo per ottenere i movimenti per categoria
 export const getMovimentiPerCategoria = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user!;
-    const { categoriaID, n } = req.params;
-    const contoCorrenteID = user.contoCorrenteId!;
-    const { format = 'json' } = req.query;
+    const { categoriaID} = req.params;
+    const { n = 10, format = 'json' } = req.query;
 
     try {
-        const movimenti = await MovimentiService.getMovimentiPerCategoria(String(contoCorrenteID), Number(categoriaID), Number(n), user.id!);
+        const movimenti = await MovimentiService.getMovimentiPerCategoria(String(user.contoCorrenteId!), String(categoriaID), Number(n), user.id!);
         if (!movimenti.length) {
             return res.status(404).json({ message: `Nessun movimento trovato per la categoria con ID ${categoriaID}.` });
         }
@@ -138,23 +79,78 @@ export const getMovimentiTraDate = async (req: Request, res: Response): Promise<
 }
 
 // Metodo per creare un nuovo movimento
-export const createMovimento = async (req: Request, res: Response): Promise<Response> => {
+export const createMovimento2 = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user!;
     const movimentoDTO = new MovimentoContoCorrenteDTO();
     Object.assign(movimentoDTO, req.body);
 
     // Validazione del DTO
-    // const validationErrors = await validate(movimentoDTO);
-    // if (validationErrors.length > 0) {
-    //     const errors = validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
-    //     return res.status(400).json({ message: 'Errore di validazione', errors });
-    // }
+     const validationErrors = await validate(movimentoDTO);
+     if (validationErrors.length > 0) {
+         const errors = validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
+         return res.status(400).json({ message: 'Errore di validazione', errors });
+     }
 
     try {
-        const nuovoMovimento = await MovimentiService.createMovimento(movimentoDTO, user.id!);
+        const nuovoMovimento = await MovimentiService.createMovimento(movimentoDTO, String(user.contoCorrenteId!), user.id!);
         return res.status(201).json(nuovoMovimento);
     } catch (error) {
         return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
     }
 }
+
+export const createMovimento = async (req: Request, res: Response): Promise<Response> => {
+    const user = req.user!;  // Prende l'utente autenticato
+
+    console.log("Raw contoCorrenteId from user:", user!.contoCorrenteId);
+    console.log("Tipo di contoCorrenteId:", typeof(user!.contoCorrenteId));
+
+    const movimentoDTO = new MovimentoContoCorrenteDTO();
+
+    // Assicurati che il contoCorrenteId sia una stringa
+    let contoCorrenteIdString;
+    if (typeof user!.contoCorrenteId === 'string') {
+        contoCorrenteIdString = user!.contoCorrenteId; // È già una stringa
+    } else if(user!.contoCorrenteId){
+        contoCorrenteIdString = user!.contoCorrenteId.toString(); // Converti in stringa se non lo è
+    }
+
+    console.log("contoCorrenteId dopo la conversione:", contoCorrenteIdString);
+
+    // Assegno i valori dal corpo della richiesta, ma escludo quelli che devono essere gestiti automaticamente
+    Object.assign(movimentoDTO, req.body, {
+        contoCorrenteID: contoCorrenteIdString,  // Imposto il contoCorrenteID come stringa
+        data: new Date()  // Imposto la data come la data corrente
+    });
+
+    console.log("Movimento DTO prima della validazione:", movimentoDTO);
+
+    // Validazione del DTO
+    const validationErrors = await validate(movimentoDTO);
+    if (validationErrors.length > 0) {
+        const errors = validationErrors.map(err => Object.values(err.constraints || {}).join(', '));
+        return res.status(400).json({ message: 'Errore di validazione', errors });
+    }
+
+    try {
+        // Recupero l'ultimo movimento per calcolare il saldo attuale
+        const ultimoMovimento = await MovimentiService.getUltimoMovimento(contoCorrenteIdString);
+
+        // Calcolo il saldo sommando o sottraendo l'importo
+        movimentoDTO.saldo = ultimoMovimento 
+            ? ultimoMovimento.saldo + movimentoDTO.importo
+            : movimentoDTO.importo; // Se non ci sono movimenti precedenti, il saldo è uguale all'importo
+
+        // Creazione del nuovo movimento
+        const nuovoMovimento = await MovimentiService.createMovimento(movimentoDTO, contoCorrenteIdString, user.id!);
+        return res.status(201).json(nuovoMovimento);
+    } catch (error) {
+        return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
+    }
+};
+
+
+
+
+
 

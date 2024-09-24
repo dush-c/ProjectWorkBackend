@@ -1,5 +1,5 @@
 export class Bonifico {
-    id: string;
+    id?: string;
     indirizzoIP: string | undefined;
     successo: boolean;
     messaggio: string;
