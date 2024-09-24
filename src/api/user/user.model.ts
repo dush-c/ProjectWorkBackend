@@ -19,6 +19,7 @@ userSchema.set("toJSON", {
   transform: (_, ret) => {
     delete ret._id;
     delete ret.__v;
+    delete ret.isConfirmed;
     return ret;
   },
 });
