@@ -6,5 +6,5 @@ const router = Router();
 
 router.get("/me", isAuthenticated, me);
 router.post("/email-confirmation", confirmEmail);
-router.put("/updatePassword",isAuthenticated, updatePassword);
+router.patch("/updatePassword",isAuthenticated, updatePassword);
 export default router;
