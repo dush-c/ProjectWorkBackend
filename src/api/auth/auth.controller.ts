@@ -78,6 +78,16 @@ export const login = async (
         return;
       }
 
+      if(!user.isConfirmed){
+        logService.add(`Login - Email not Confirmed`, false);
+        res.status(401);
+        res.json({
+          error: "LoginError",
+          message: "Email not Confirmed",
+        });
+        return;
+      }
+
       const token = jwt.sign(user, JWT_SECRET, { expiresIn: "7 days" });
       logService.add("Login", true);
 
