@@ -8,7 +8,8 @@ import { ContoCorrente as iContoCorrente } from "../contoCorrente/controCorrente
 class BonificoService {
     // Metodo per eseguire il bonifico
     async eseguiBonifico(bonificoDTO: BonificoDTO, userId: string): Promise<{ success: boolean, message: string }> {
-        const { ibanDestinatario, ibanMittente, importo } = bonificoDTO;
+        let { ibanDestinatario, ibanMittente, importo, causale } = bonificoDTO;
+        console.log("ibanMittente: ", ibanMittente);
 
         // Verifica che l'IBAN destinatario esista
         const destinatario = await ContoCorrenteModel.findOne({ IBAN: ibanDestinatario });
@@ -41,6 +42,11 @@ class BonificoService {
         const nuovoSaldoMittente = ultimoMovimentoMittente.saldo - importo;
         const nuovoSaldoDestinatario = ultimoMovimentoDestinatario ? ultimoMovimentoDestinatario.saldo + importo : importo;
 
+        if (causale!="" && causale!=null){
+            causale = "Causale: "+ causale;
+        }
+        console.log(causale);
+
         // Registra il movimento per il mittente
         const movimentoMittente = new MovimentoModel({
             contoCorrenteID: mittente._id,
@@ -48,7 +54,7 @@ class BonificoService {
             importo: importo,
             saldo: nuovoSaldoMittente,
             categoriaMovimentoID: "66f180ef3af4b7f8c8ca9186", // ID della categoria per i bonifici, supponendo sia 1
-            descrizioneEstesa: `Bonifico a ${ibanDestinatario}`
+            descrizioneEstesa: `Bonifico disposto a favore di: ${ibanDestinatario}. ${causale}`
         });
         await movimentoMittente.save();
 
@@ -59,7 +65,7 @@ class BonificoService {
             importo: importo,
             saldo: nuovoSaldoDestinatario,
             categoriaMovimentoID: "66f180ef3af4b7f8c8ca9185", // ID della categoria per i bonifici ricevuti
-            descrizioneEstesa: `Bonifico ricevuto da ${ibanMittente}`
+            descrizioneEstesa: `Bonifico disposto da: ${ibanMittente}. ${causale}`
         });
         await movimentoDestinatario.save();
 
@@ -95,7 +101,7 @@ class BonificoService {
           console.error(error);
           return 'Errore nel recupero dell\'IBAN';
         }
-    }
+      }
       
 
 }
