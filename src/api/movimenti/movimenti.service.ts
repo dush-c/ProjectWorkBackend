@@ -46,6 +46,31 @@ export class MovimentiService {
       .limit(n);
   }
 
+  // Recupera movimenti per conto corrente
+  async getSaldo(
+    contoCorrenteID: string,
+    userId: string
+  ): Promise<MovimentoContoCorrente[] | string> {
+    // Verifica che l'utente abbia accesso al conto
+    const proprietario = await this.verificaProprietarioConto(
+      contoCorrenteID,
+      userId
+    );
+    if (!proprietario) {
+      return "Accesso negato: l'utente non è autorizzato a visualizzare i movimenti di questo conto.";
+    }
+
+    const { ObjectId } = require("mongodb"); // Importa ObjectId
+
+    // Converto la stringa in ObjectId
+    const objectIdContoCorrente = new ObjectId(contoCorrenteID);
+
+
+    return await MovimentoModel.find({ contoCorrenteID: objectIdContoCorrente })
+  .sort({ data: -1 })
+  .select('saldo');  // Seleziona solo il campo 'saldo'    
+  }
+
   // Recupera movimenti per categoria
   async getMovimentiPerCategoria(
     contoCorrenteID: string,
