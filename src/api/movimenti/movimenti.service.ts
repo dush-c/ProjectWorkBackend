@@ -70,7 +70,7 @@ export class MovimentiService {
     const objectIdContoCorrente = new ObjectId(contoCorrenteID);
 
 
-    return await MovimentoModel.find({ contoCorrenteID: objectIdContoCorrente })
+    return await MovimentoModel.find({ contoCorrenteId: objectIdContoCorrente })
   .sort({ data: -1 })
   .select('saldo');  // Seleziona solo il campo 'saldo'    
   }
