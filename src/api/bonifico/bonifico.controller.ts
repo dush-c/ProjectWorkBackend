@@ -11,10 +11,11 @@ export const eseguiBonifico = async (
   res: Response
 ): Promise<Response> => {
   // Mappiamo i parametri dal corpo della richiesta
-  const { ibanDestinatario, importo} = req.body;
+  const { ibanDestinatario, importo, causale=""} = req.body;
   console.log(req.body);
 
   const user = req.user! as User;
+  console.log("user.id!: ", user.id!);
 
   // Verifica che i campi non siano undefined
   if (!ibanDestinatario || !importo) {
@@ -27,6 +28,7 @@ export const eseguiBonifico = async (
   bonificoDTO.ibanMittente = await BonificoService.getIBANByUserId(user.id!);
   bonificoDTO.ibanDestinatario = ibanDestinatario;
   bonificoDTO.importo = Number(importo);
+  bonificoDTO.causale = causale;
 
   const errors = await validate(bonificoDTO); // Validazione del DTO
   if (errors.length > 0) {

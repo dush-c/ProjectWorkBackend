@@ -7,11 +7,10 @@ import { MovimentoContoCorrente } from "../movimenti/movimenti.entity";
 import { UserModel } from "../user/user.model";
 
 class BonificoService {
-  // Metodo per eseguire il bonifico
-  async eseguiBonifico(
-    bonificoDTO: BonificoDTO
-  , userId: string): Promise<{ success: boolean; message: string }> {
-    const { ibanDestinatario, ibanMittente, importo } = bonificoDTO;
+    // Metodo per eseguire il bonifico
+    async eseguiBonifico(bonificoDTO: BonificoDTO, userId: string): Promise<{ success: boolean, message: string }> {
+        let { ibanDestinatario, ibanMittente, importo, causale } = bonificoDTO;
+        console.log("ibanMittente: ", ibanMittente);
 
     // Verifica che l'IBAN destinatario esista
     const destinatario = await ContoCorrenteModel.findOne({
@@ -44,33 +43,35 @@ class BonificoService {
       contoCorrenteID: destinatario._id,
     }).sort({ data: -1 });
 
-    // Esegui il bonifico: aggiorna il saldo dei conti
-    const nuovoSaldoMittente = ultimoMovimentoMittente.saldo - importo;
-    const nuovoSaldoDestinatario = ultimoMovimentoDestinatario
-      ? ultimoMovimentoDestinatario.saldo + importo
-      : importo;
+        // Esegui il bonifico: aggiorna il saldo dei conti
+        const nuovoSaldoMittente = ultimoMovimentoMittente.saldo - importo;
+        const nuovoSaldoDestinatario = ultimoMovimentoDestinatario ? ultimoMovimentoDestinatario.saldo + importo : importo;
 
-    // Registra il movimento per il mittente
-    const movimentoMittente = new MovimentoModel({
-      contoCorrenteID: mittente._id,
-      data: new Date(),
-      importo: importo,
-      saldo: nuovoSaldoMittente,
-      categoriaMovimentoID: "66f180ef3af4b7f8c8ca9186", // ID della categoria per i bonifici, supponendo sia 1
-      descrizioneEstesa: `Bonifico disposto a favore di: ${ibanDestinatario}`,
-    });
-    await movimentoMittente.save();
+        if (causale!="" && causale!=null){
+            causale = "Causale: "+ causale;
+        }
 
-    // Registra il movimento per il destinatario
-    const movimentoDestinatario = new MovimentoModel({
-      contoCorrenteID: destinatario._id,
-      data: new Date(),
-      importo: importo,
-      saldo: nuovoSaldoDestinatario,
-      categoriaMovimentoID: "66f180ef3af4b7f8c8ca9185", // ID della categoria per i bonifici ricevuti
-      descrizioneEstesa: `Bonifico ricevuto da ${ibanMittente}`,
-    });
-    await movimentoDestinatario.save();
+        // Registra il movimento per il mittente
+        const movimentoMittente = new MovimentoModel({
+            contoCorrenteID: mittente._id,
+            data: new Date(),
+            importo: importo,
+            saldo: nuovoSaldoMittente,
+            categoriaMovimentoID: "66f180ef3af4b7f8c8ca9186", // ID della categoria per i bonifici, supponendo sia 1
+            descrizioneEstesa: `Bonifico disposto a favore di: ${ibanDestinatario}. ${causale}`
+        });
+        await movimentoMittente.save();
+
+        // Registra il movimento per il destinatario
+        const movimentoDestinatario = new MovimentoModel({
+            contoCorrenteID: destinatario._id,
+            data: new Date(),
+            importo: importo,
+            saldo: nuovoSaldoDestinatario,
+            categoriaMovimentoID: "66f180ef3af4b7f8c8ca9185", // ID della categoria per i bonifici ricevuti
+            descrizioneEstesa: `Bonifico disposto da: ${ibanMittente}. ${causale}`
+        });
+        await movimentoDestinatario.save();
 
     // Log dell'operazione
     logService.add("Transaction", true);
@@ -143,7 +144,7 @@ class BonificoService {
           console.error(error);
           return 'Errore nel recupero dell\'IBAN';
         }
-    }
+      }
       
 
 }

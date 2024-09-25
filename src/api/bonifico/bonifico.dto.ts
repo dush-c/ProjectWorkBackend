@@ -14,4 +14,8 @@ export class BonificoDTO {
     @IsNotEmpty()
     @IsPositive()
     importo: number;
+
+    @IsOptional()
+    @IsString()
+    causale: string;
 }
