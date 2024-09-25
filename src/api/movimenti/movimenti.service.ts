@@ -151,6 +151,36 @@ export class MovimentiService {
     const movimento = new MovimentoModel(movimentoDTO);
     return await movimento.save();
   }
+
+    // Recupera movimenti per conto corrente
+    async getMovimentiById(
+      contoCorrenteID: string,
+      userId: string,
+      movimentoId: string
+    ): Promise<MovimentoContoCorrente | string | null> {
+      try {
+        // Verifica che l'utente abbia accesso al conto
+        const proprietario = await this.verificaProprietarioConto(
+          contoCorrenteID,
+          userId
+        );
+        if (!proprietario) {
+          return "Accesso negato: l'utente non è autorizzato a visualizzare i movimenti di questo conto.";
+        }
+    
+        const { ObjectId } = require("mongodb"); // Importa ObjectId
+    
+        // Converto la stringa in ObjectId
+        const objectIdContoCorrente = new ObjectId(contoCorrenteID);
+    
+        return await MovimentoModel.findOne({
+          _id: movimentoId,
+          contoCorrenteID: objectIdContoCorrente  // Aggiungi questa condizione
+        });
+    }catch(error){
+      return `Errore durante il recupero del movimento: ${error}`; 
+    }
+  }
 }
 
 export default new MovimentiService();
