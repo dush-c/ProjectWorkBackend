@@ -9,7 +9,6 @@ class BonificoService {
     // Metodo per eseguire il bonifico
     async eseguiBonifico(bonificoDTO: BonificoDTO, userId: string): Promise<{ success: boolean, message: string }> {
         let { ibanDestinatario, ibanMittente, importo, causale } = bonificoDTO;
-        console.log("ibanMittente: ", ibanMittente);
 
         // Verifica che l'IBAN destinatario esista
         const destinatario = await ContoCorrenteModel.findOne({ IBAN: ibanDestinatario });
@@ -20,7 +19,6 @@ class BonificoService {
 
         // Verifica che l'IBAN mittente esista
         const mittente = await ContoCorrenteModel.findOne({ IBAN: ibanMittente });
-        console.log(mittente);
         if (!mittente) {
             logService.add("Transaction Error: IBAN not found", false);
             return { success: false, message: 'IBAN mittente non trovato.' };
@@ -45,7 +43,6 @@ class BonificoService {
         if (causale!="" && causale!=null){
             causale = "Causale: "+ causale;
         }
-        console.log(causale);
 
         // Registra il movimento per il mittente
         const movimentoMittente = new MovimentoModel({
@@ -78,8 +75,7 @@ class BonificoService {
         try {
           // Cerca l'utente senza popolare contoCorrenteID
           const user = await UserModel.findById(userId);
-          console.log("Utente: ", user);
-      
+
           if (!user) {
             throw new Error('Utente non trovato');
           }
@@ -102,8 +98,6 @@ class BonificoService {
           return 'Errore nel recupero dell\'IBAN';
         }
       }
-      
-
 }
 
 export default new BonificoService();

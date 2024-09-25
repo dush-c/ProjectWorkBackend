@@ -11,10 +11,8 @@ export const eseguiBonifico = async (
 ): Promise<Response> => {
   // Mappiamo i parametri dal corpo della richiesta
   const { ibanDestinatario, importo, causale=""} = req.body;
-  console.log(req.body);
 
   const user = req.user! as User;
-  console.log("user.id!: ", user.id!);
 
   // Verifica che i campi non siano undefined
   if (!ibanDestinatario || !importo) {
