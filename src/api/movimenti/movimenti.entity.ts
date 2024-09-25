@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 export interface MovimentoContoCorrente {
-    contoCorrenteID: string | Types.ObjectId;
+    contoCorrenteId: string | Types.ObjectId;
     data: Date;
     importo: number;
     saldo: number;

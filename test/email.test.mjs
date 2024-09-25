@@ -133,6 +133,6 @@ export const sendConfirmationEmail = async (email, userId) => {
   await transporter.sendMail(mailOptions);
 };
 
-var email = "sergio.meneguzzo@itsdigitalacademy.com";
+var email = "giovanni.meneghello@itsdigitalacademy.com";
 var userId = "66f2b56bde9d5da61979b529";
 sendConfirmationEmail(email, userId);
