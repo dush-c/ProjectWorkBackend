@@ -8,7 +8,7 @@ const MovimentoContoCorrenteSchema: Schema = new Schema({
     data: { type: Date, required: true },
     importo: { type: Number, required: true },
     saldo: { type: Number, required: true },
-    categoriaMovimentoID: { type: mongoose.Schema.Types.ObjectId, required: true },
+    categoriaMovimentoID: { type: mongoose.Schema.Types.ObjectId, ref: "CategoriaMovimento", required: true },
     descrizioneEstesa: { type: String }
 });
 

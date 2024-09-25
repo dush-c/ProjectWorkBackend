@@ -44,8 +44,10 @@ export class MovimentiService {
 
     // Faccio la query con l'ObjectId
     return await MovimentoModel.find({ contoCorrenteId: objectIdContoCorrente })
+      .populate("categoriaMovimentoID")
       .sort({ data: -1 })
-      .limit(n);
+      .limit(n)
+      ;
   }
 
   // Recupera movimenti per categoria
