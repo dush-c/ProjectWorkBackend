@@ -31,6 +31,8 @@ export class MovimentiService {
       contoCorrenteID,
       userId
     );
+
+
     if (!proprietario) {
       return "Accesso negato: l'utente non è autorizzato a visualizzare i movimenti di questo conto.";
     }
@@ -41,7 +43,7 @@ export class MovimentiService {
     const objectIdContoCorrente = new ObjectId(contoCorrenteID);
 
     // Faccio la query con l'ObjectId
-    return await MovimentoModel.find({ contoCorrenteID: objectIdContoCorrente })
+    return await MovimentoModel.find({ contoCorrenteId: objectIdContoCorrente })
       .sort({ data: -1 })
       .limit(n);
   }

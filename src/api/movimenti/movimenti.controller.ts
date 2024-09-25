@@ -9,10 +9,9 @@ export const getMovimenti = async (req: Request, res: Response, next: NextFuncti
     try { 
         const user = req.user! as User;  // Ottieni l'utente autenticato
         const { n = 10} = req.query;
-
         // Recupera i movimenti tramite il servizio
         const movimenti = await MovimentiService.getMovimenti(String(user.contoCorrenteId), Number(n), user.id!);
-        
+
         // Se non ci sono movimenti
         if (!movimenti.length) {
             return res.status(404).json({ message: `Nessun movimento trovato per il conto corrente con ID ${String(user.contoCorrenteId)}.` });
