@@ -48,7 +48,7 @@ export const confirmEmail = async (
 
     const aperturaConto: MovimentoContoCorrente = {
       categoriaMovimentoID: "66f180ef3af4b7f8c8ca9184",
-      contoCorrenteID: contoId.toString(),
+      contoCorrenteId: contoId.toString(),
       data: new Date(),
       importo: 0,
       saldo: 0,
