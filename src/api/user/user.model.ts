@@ -7,12 +7,10 @@ export const userSchema = new mongoose.Schema<iUser>({
   username: String,
   picture: String,
   contoCorrenteId: { type: mongoose.Schema.Types.ObjectId, ref: "BankAccount", default: null },
+  isConfirmed: {type: Boolean, default: false}
 });
 
 
-userSchema.virtual("isConfirmed").get(function () {
-    return false;
-  });
 
 userSchema.set("toJSON", {
   virtuals: true,
