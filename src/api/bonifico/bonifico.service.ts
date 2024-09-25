@@ -2,7 +2,6 @@ import { BonificoDTO } from './bonifico.dto';
 import { ContoCorrenteModel } from '../contoCorrente/contoCorrente.model'; // Modello del conto corrente
 import { MovimentoModel } from '../movimenti/movimenti.model'; // Vecchio modello per movimenti
 import logService from '../services/logs/log.service';
-import mongoose from 'mongoose';
 import { UserModel } from '../user/user.model';
 import { ContoCorrente as iContoCorrente } from "../contoCorrente/controCorrente.entity";
 
@@ -46,7 +45,7 @@ class BonificoService {
         const movimentoMittente = new MovimentoModel({
             contoCorrenteID: mittente._id,
             data: new Date(),
-            importo: -importo,
+            importo: importo,
             saldo: nuovoSaldoMittente,
             categoriaMovimentoID: "66f180ef3af4b7f8c8ca9186", // ID della categoria per i bonifici, supponendo sia 1
             descrizioneEstesa: `Bonifico a ${ibanDestinatario}`
@@ -71,26 +70,33 @@ class BonificoService {
 
     async getIBANByUserId(userId: string): Promise<string> {
         try {
-      
-          // Cerca l'utente e popola il campo contoCorrenteID
-          const user = await UserModel.findById(userId).populate('contoCorrenteID');
-          console.log("Utente: ",user);
+          // Cerca l'utente senza popolare contoCorrenteID
+          const user = await UserModel.findById(userId);
+          console.log("Utente: ", user);
       
           if (!user) {
             throw new Error('Utente non trovato');
           }
       
-          // Verifica che contoCorrenteID sia popolato e sia un'istanza di ContoCorrenteModel
-          if (!user.contoCorrenteId || !(user.contoCorrenteId instanceof ContoCorrenteModel)) {
-            throw new Error('Conto corrente non trovato per questo utente');
+          // Verifica se contoCorrenteID è presente e se è un ObjectId
+          if (!user.contoCorrenteId) {
+            throw new Error('Conto corrente non associato a questo utente');
+          }
+      
+          // Se contoCorrenteID è un ObjectId, cerca il conto corrente nel database
+          const contoCorrente = await ContoCorrenteModel.findById(user.contoCorrenteId);
+          if (!contoCorrente) {
+            throw new Error('Conto corrente non trovato');
           }
       
           // Restituisci l'IBAN
-          return (user.contoCorrenteId as iContoCorrente).IBAN;
+          return contoCorrente.IBAN;
         } catch (error) {
-            return 'Errore nel recupero dell\'IBAN:';
+          console.error(error);
+          return 'Errore nel recupero dell\'IBAN';
         }
-      }
+    }
+      
 
 }
 
