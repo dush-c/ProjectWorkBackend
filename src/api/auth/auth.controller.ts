@@ -83,7 +83,7 @@ export const login = async (
         res.status(401);
         res.json({
           error: "LoginError",
-          message: "Email not Confirmed",
+          message: "email not confirmed",
         });
         return;
       }
