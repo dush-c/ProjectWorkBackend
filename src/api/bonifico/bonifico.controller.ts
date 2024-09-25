@@ -1,8 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import BonificoService from "./bonifico.service";
 import { BonificoDTO } from "./bonifico.dto";
 import { validate } from "class-validator"; // Per validare il DTO
 import logService from "../services/logs/log.service";
+import bonificoService from "./bonifico.service";
 import { User } from "../user/user.entity";
 
 export const eseguiBonifico = async (
@@ -51,5 +52,35 @@ export const eseguiBonifico = async (
     }
     logService.add("Transaction Error", false);
     return res.status(500).json({ message: "Errore sconosciuto" });
+  }
+};
+
+export const eseguiRicarica = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  //operatore: string, numero: int, taglio: int
+  const { numero, operatore, taglio } = req.body;
+  const user = req.user! as User;
+  //aggiungere un record nella tabella movimenti che riduce il valore del saldo finale
+  try {
+    const result = await bonificoService.eseguiRicarica(
+      user,
+      numero,
+      operatore,
+      taglio
+    );
+
+    if (result.success) {
+      logService.add("Transaction", true);
+      return res.status(200).json({ message: result.message });
+    }else{
+      return res.status(404).json({message: result.message});
+    }
+    
+  } catch (err) {
+    logService.add("Transaction Error", false);
+    return res.status(500).json({message: `Error ${err}`});
   }
 };
