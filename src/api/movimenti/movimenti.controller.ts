@@ -46,7 +46,7 @@ export const getMovimentiPerCategoria = async (req: Request, res: Response): Pro
 export const getMovimentiTraDate = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user! as User;
     const contoCorrenteID = user.contoCorrenteId!;
-    const { dataInizio, dataFine, n = 10, format = 'json' } = req.query;
+    const { dataInizio, dataFine, n = 10 } = req.query;
 
     try {
         const movimenti = await MovimentiService.getMovimentiTraDate(
@@ -99,3 +99,22 @@ export const createMovimento = async (req: Request, res: Response): Promise<Resp
         return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
     }
 };
+
+export const getMovimentiById = async (req: Request, res: Response, next: NextFunction): Promise<Response> => {
+    try { 
+        const user = req.user! as User;  // Ottieni l'utente autenticato
+        const { id} = req.params;
+
+        // Recupera i movimenti tramite il servizio
+        const movimento = await MovimentiService.getMovimentiById(String(user.contoCorrenteId), user.id!, id);
+        
+        // Se non ci sono movimenti
+        if (movimento === null || typeof movimento === 'string') {
+            return res.status(404).json({ message: `Nessun movimento trovato per il conto corrente con ID ${String(user.contoCorrenteId)} con ID ${id}.` });
+        }
+        // Ritorna i movimenti in formato JSON
+        return res.status(200).json(movimento);
+    } catch (error) {
+        return res.status(500).json({ message: error instanceof Error ? `Errore del server: ${error.message}` : 'Errore sconosciuto' });
+    }
+}

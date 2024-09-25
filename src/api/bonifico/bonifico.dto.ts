@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsPositive, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsPositive, IsString, Length } from 'class-validator';
 
 export class BonificoDTO {
     @IsNotEmpty()

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import {getMovimenti, getMovimentiPerCategoria, getMovimentiTraDate, createMovimento} from './movimenti.controller';
+import {getMovimenti, getMovimentiPerCategoria, getMovimentiTraDate, createMovimento, getMovimentiById} from './movimenti.controller';
 import { isAuthenticated } from '../../utils/auth/authenticated-middleware';
 
 
@@ -16,6 +16,8 @@ router.get('/categoriaMovimento/:categoriaID', getMovimentiPerCategoria);
 router.get('/movimentiTraDate', getMovimentiTraDate);
 
 // Rotta per creare un movimento
-router.post('/', createMovimento)
+router.post('/', createMovimento);
+
+router.get('/:id', getMovimentiById);
 
 export default router;

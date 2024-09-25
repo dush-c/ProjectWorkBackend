@@ -3,23 +3,27 @@ import BonificoService from "./bonifico.service";
 import { BonificoDTO } from "./bonifico.dto";
 import { validate } from "class-validator"; // Per validare il DTO
 import logService from "../services/logs/log.service";
+import { User } from "../user/user.entity";
 
 export const eseguiBonifico = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   // Mappiamo i parametri dal corpo della richiesta
-  const { ibanMittente, ibanDestinatario, importo } = req.body;
+  const { ibanDestinatario, importo} = req.body;
+  console.log(req.body);
+
+  const user = req.user! as User;
 
   // Verifica che i campi non siano undefined
-  if (!ibanMittente || !ibanDestinatario || !importo) {
+  if (!ibanDestinatario || !importo) {
     logService.add("Transaction Error", false);
     return res.status(400).json({ message: "Dati mancanti o incompleti." });
   }
 
   // Creazione dell'istanza del DTO e validazione
   const bonificoDTO = new BonificoDTO();
-  bonificoDTO.ibanMittente = ibanMittente;
+  bonificoDTO.ibanMittente = await BonificoService.getIBANByUserId(user.id!);
   bonificoDTO.ibanDestinatario = ibanDestinatario;
   bonificoDTO.importo = Number(importo);
 
@@ -30,7 +34,7 @@ export const eseguiBonifico = async (
   }
 
   try {
-    const result = await BonificoService.eseguiBonifico(bonificoDTO);
+    const result = await BonificoService.eseguiBonifico(bonificoDTO, user.id!);
     if (result.success) {
       logService.add("Transaction", true);
 
