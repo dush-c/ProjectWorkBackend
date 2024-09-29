@@ -38,7 +38,7 @@ export class ContoCorrenteService {
       descrizioneEstesa: "Apertura Conto"
     }
 
-    console.log("Apertura conto",aperturaConto);
+    // console.log("Apertura conto",aperturaConto);
     
     return await MovimentoModel.create(aperturaConto);
   }

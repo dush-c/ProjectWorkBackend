@@ -66,7 +66,7 @@ export async function populateDatabase() {
     }
     ]);
 
-    console.log('Utenti creati:', utenti);
+    // console.log('Utenti creati:', utenti);
     const utentiInseriti = await User.find({});
 
     const contiCorrentiInseriti = await ContoCorrenteModel.find({});

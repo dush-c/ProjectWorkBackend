@@ -30,7 +30,7 @@ class BonificoService {
 
     // Recupera l'ultimo movimento per il mittente
     const ultimoMovimentoMittente = await MovimentoModel.findOne({
-      contoCorrenteID: mittente._id,
+      contoCorrenteId: mittente._id,
     }).sort({ data: -1 }); // Prende l'ultimo movimento in ordine di data
     if (!ultimoMovimentoMittente || ultimoMovimentoMittente.saldo < importo) {
       logService.add("Transaction Error: Insufficent balance", false);
@@ -39,7 +39,7 @@ class BonificoService {
 
     // Recupera l'ultimo movimento per il destinatario
     const ultimoMovimentoDestinatario = await MovimentoModel.findOne({
-      contoCorrenteID: destinatario._id,
+      contoCorrenteId: destinatario._id,
     }).sort({ data: -1 });
 
         // Esegui il bonifico: aggiorna il saldo dei conti
@@ -52,7 +52,7 @@ class BonificoService {
 
         // Registra il movimento per il mittente
         const movimentoMittente = new MovimentoModel({
-            contoCorrenteID: mittente._id,
+            contoCorrenteId: mittente._id,
             data: new Date(),
             importo: importo,
             saldo: nuovoSaldoMittente,
@@ -63,7 +63,7 @@ class BonificoService {
 
         // Registra il movimento per il destinatario
         const movimentoDestinatario = new MovimentoModel({
-            contoCorrenteID: destinatario._id,
+            contoCorrenteId: destinatario._id,
             data: new Date(),
             importo: importo,
             saldo: nuovoSaldoDestinatario,
@@ -109,7 +109,7 @@ class BonificoService {
       descrizioneEstesa: `Ricarica telefonica a favore di ${operatore}`,
     };
 
-    console.log("movimento uscita: ", movimentoUscita);
+    // console.log("movimento uscita: ", movimentoUscita);
 
     await MovimentoModel.create(movimentoUscita);
 
