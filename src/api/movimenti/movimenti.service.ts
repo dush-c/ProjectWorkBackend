@@ -183,14 +183,14 @@ export class MovimentiService {
 
     // Recupera movimenti per conto corrente
     async getMovimentiById(
-      contoCorrenteID: string,
+      contoCorrenteId: string,
       userId: string,
       movimentoId: string
     ): Promise<MovimentoContoCorrente | string | null> {
       try {
         // Verifica che l'utente abbia accesso al conto
         const proprietario = await this.verificaProprietarioConto(
-          contoCorrenteID,
+          contoCorrenteId,
           userId
         );
         if (!proprietario) {
@@ -200,11 +200,11 @@ export class MovimentiService {
         const { ObjectId } = require("mongodb"); // Importa ObjectId
     
         // Converto la stringa in ObjectId
-        const objectIdContoCorrente = new ObjectId(contoCorrenteID);
+        const objectIdContoCorrente = new ObjectId(contoCorrenteId);
     
         return await MovimentoModel.findOne({
           _id: movimentoId,
-          contoCorrenteID: objectIdContoCorrente  // Aggiungi questa condizione
+          contoCorrenteId: objectIdContoCorrente  // Aggiungi questa condizione
         });
     }catch(error){
       return `Errore durante il recupero del movimento: ${error}`; 

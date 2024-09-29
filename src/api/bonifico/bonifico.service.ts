@@ -33,7 +33,10 @@ class BonificoService {
       contoCorrenteId: mittente._id,
     }).sort({ data: -1 }); // Prende l'ultimo movimento in ordine di data
     if (!ultimoMovimentoMittente || ultimoMovimentoMittente.saldo < importo) {
-      logService.add("Transaction Error: Insufficent balance", false);
+        console.log("Ultimo movimento mittente:", ultimoMovimentoMittente);
+        console.log("Saldo mittente:", ultimoMovimentoMittente?.saldo, "Importo bonifico:", importo);
+
+        logService.add("Transaction Error: Insufficent balance", false);
       return { success: false, message: "Saldo insufficiente." };
     }
 
