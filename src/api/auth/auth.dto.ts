@@ -8,7 +8,7 @@ export class AddUserDTO {
   lastName: string;
 
   @IsUrl()
-  picture: string;
+  picture?: string;
 
   // @IsEmail()
   username: string;
