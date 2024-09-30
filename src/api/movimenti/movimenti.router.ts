@@ -12,7 +12,7 @@ router.get('/', getMovimenti);
 router.get('/saldo', getSaldo);
 
 // Rotta per ottenere movimenti per categoria
-router.get('/categoriaMovimento/:categoriaID', getMovimentiPerCategoria);
+router.get('/categoriaMovimento/:nomeCategoria', getMovimentiPerCategoria);
 
 // Rotta per ottenere movimenti tra date
 router.get('/movimentiTraDate', getMovimentiTraDate);

@@ -46,13 +46,14 @@ export const getSaldo= async (req: Request, res: Response, next: NextFunction): 
 // Metodo per ottenere i movimenti per categoria
 export const getMovimentiPerCategoria = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user! as User;
-    const { categoriaID} = req.params;
+    const { nomeCategoria} = req.params;
+    console.log("nome categoria1: ", nomeCategoria);
     const { n = 10} = req.query;
 
     try {
-        const movimenti = await MovimentiService.getMovimentiPerCategoria(String(user.contoCorrenteId!), String(categoriaID), Number(n), user.id!);
+        const movimenti = await MovimentiService.getMovimentiPerCategoria(String(user.contoCorrenteId!), String(nomeCategoria), Number(n), user.id!);
         if (!movimenti.length) {
-            return res.status(404).json({ message: `Nessun movimento trovato per la categoria con ID ${categoriaID}.` });
+            return res.status(404).json({ message: `Nessun movimento trovato per la categoria: ${nomeCategoria}.` });
         }
         return res.json(movimenti);
     } catch (error) {

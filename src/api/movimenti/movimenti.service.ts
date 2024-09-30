@@ -3,6 +3,7 @@ import { MovimentoContoCorrenteDTO } from "./movimenti.dto"; // DTO per la valid
 import { validate } from "class-validator"; // Per eseguire la validazione dei dati di input
 import { UserModel } from "../user/user.model";
 import { MovimentoContoCorrente } from "./movimenti.entity";
+import CategoriaMovimento from '../categoriaMovimenti/categoriaMovimenti.model';
 
 export class MovimentiService {
   // Metodo per verificare che l'utente sia associato al conto corrente
@@ -78,7 +79,7 @@ export class MovimentiService {
   // Recupera movimenti per categoria
   async getMovimentiPerCategoria(
     contoCorrenteId: string,
-    categoriaID: string,
+    nomeCategoria: string,
     n: number,
     userId: string
   ): Promise<MovimentoContoCorrente[] | string> {
@@ -89,6 +90,14 @@ export class MovimentiService {
     );
     if (!proprietario) {
       return "Accesso negato: l'utente non è autorizzato a visualizzare i movimenti di questo conto.";
+    }
+    console.log("Nome categoria: ",nomeCategoria);
+
+    const categoriaID = await CategoriaMovimento.findOne({ NomeCategoria: nomeCategoria });
+
+    // Se non viene trovata nessuna categoria
+    if (!categoriaID) {
+        return 'Categoria non trovata';
     }
 
     const { ObjectId } = require("mongodb");
