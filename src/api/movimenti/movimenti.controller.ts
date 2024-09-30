@@ -63,12 +63,12 @@ export const getMovimentiPerCategoria = async (req: Request, res: Response): Pro
 // Metodo per ottenere i movimenti tra date
 export const getMovimentiTraDate = async (req: Request, res: Response): Promise<Response> => {
     const user = req.user! as User;
-    const contoCorrenteID = user.contoCorrenteId!;
+    const contoCorrenteId = user.contoCorrenteId!;
     const { dataInizio, dataFine, n = 10 } = req.query;
 
     try {
         const movimenti = await MovimentiService.getMovimentiTraDate(
-            String(contoCorrenteID),
+            String(contoCorrenteId),
             new Date(dataInizio as string),
             new Date(dataFine as string),
             Number(n),
@@ -90,7 +90,7 @@ export const createMovimento = async (req: Request, res: Response): Promise<Resp
 
     // Assegno i valori dal corpo della richiesta, ma escludo quelli che devono essere gestiti automaticamente
     Object.assign(movimentoDTO, req.body, {
-        contoCorrenteID: String(user!.contoCorrenteId),  // Imposto il contoCorrenteID come stringa
+        contoCorrenteId: String(user!.contoCorrenteId),  // Imposto il contoCorrenteId come stringa
         data: new Date()  // Imposto la data come la data corrente
     });
 
