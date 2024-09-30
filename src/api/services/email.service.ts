@@ -18,7 +18,6 @@ export const sendConfirmationEmail = async (email: string, userId: string) => {
         from: 'noreply.fifthpocket@gmail.com',
         to: email,
         subject: 'Email Confirmation',
-        text: "errore",
         attachments: [
           {
             filename: 'LogoPW1.webp',
@@ -115,7 +114,7 @@ export const sendConfirmationEmail = async (email: string, userId: string) => {
         tuo indirizzo email cliccando sul pulsante qui sotto.
       </p>
 
-      <a href="http://localhost:4200/email-confirmed?token=${token}" class="btn-confirm"
+      <a href="https://project-work-ruby.vercel.app/email-confirmed?token=${token}" class="btn-confirm"
         >Completa Registrazione</a
       >
 
