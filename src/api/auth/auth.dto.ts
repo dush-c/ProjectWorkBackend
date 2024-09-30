@@ -10,7 +10,7 @@ export class AddUserDTO {
   @IsUrl()
   picture?: string;
 
-  // @IsEmail()
+  @IsEmail()
   username: string;
 
   @MinLength(8)
