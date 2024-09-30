@@ -2,8 +2,8 @@ import { IsNotEmpty, IsNumber, IsDate, IsString, IsOptional, Min, IsMongoId } fr
 
 export class MovimentoContoCorrenteDTO {
     //@IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
-    @IsMongoId({ message: 'contoCorrenteID deve essere un MongoId.' })
-    contoCorrenteID: string;
+    @IsMongoId({ message: 'contoCorrenteId deve essere un MongoId.' })
+    contoCorrenteId: string;
 
     @IsNotEmpty({ message: 'La data del movimento è obbligatoria.' })
     @IsDate({ message: 'Data deve essere un valore di tipo data.' })
@@ -26,9 +26,9 @@ export class MovimentoContoCorrenteDTO {
     @IsString({ message: 'Descrizione estesa deve essere una stringa.' })
     descrizioneEstesa?: string;
 
-    // Metodo per aggiornare contoCorrenteID
+    // Metodo per aggiornare contoCorrenteId
     public setContoCorrenteID(newID: string): void {
-        this.contoCorrenteID = newID;
+        this.contoCorrenteId = newID;
     }
 }
 

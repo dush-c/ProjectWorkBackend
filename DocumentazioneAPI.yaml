@@ -69,7 +69,7 @@ paths:
       tags:
         - Auth
       parameters:
-        - name: contoCorrenteID
+        - name: contoCorrenteId
           in: query
           schema:
             type: integer
@@ -135,12 +135,12 @@ paths:
             text/json:
               schema:
                 type: string
-  /api/Movimenti/{contoCorrenteID}:
+  /api/Movimenti/{contoCorrenteId}:
     get:
       tags:
         - Movimenti
       parameters:
-        - name: contoCorrenteID
+        - name: contoCorrenteId
           in: path
           required: true
           schema:
@@ -159,12 +159,12 @@ paths:
       responses:
         '200':
           description: Success
-  /api/Movimenti/CategoriaMovimento/{contoCorrenteID}/{categoriaID}/{n}:
+  /api/Movimenti/CategoriaMovimento/{contoCorrenteId}/{categoriaID}/{n}:
     get:
       tags:
         - Movimenti
       parameters:
-        - name: contoCorrenteID
+        - name: contoCorrenteId
           in: path
           required: true
           schema:
@@ -206,12 +206,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ResponseMovimento'
-  /api/Movimenti/MovimentiTraDate/{contoCorrenteID}:
+  /api/Movimenti/MovimentiTraDate/{contoCorrenteId}:
     get:
       tags:
         - Movimenti
       parameters:
-        - name: contoCorrenteID
+        - name: contoCorrenteId
           in: path
           required: true
           schema:
@@ -281,7 +281,7 @@ components:
         messaggio:
           type: string
           nullable: true
-        contoCorrenteID:
+        contoCorrenteId:
           type: integer
           format: int32
           nullable: true
