@@ -214,7 +214,7 @@ export class MovimentiService {
         return await MovimentoModel.findOne({
           _id: movimentoId,
           contoCorrenteId: objectIdContoCorrente  // Aggiungi questa condizione
-        });
+        }).populate("categoriaMovimentoID");
     }catch(error){
       return `Errore durante il recupero del movimento: ${error}`; 
     }
