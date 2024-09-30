@@ -60,7 +60,7 @@ class BonificoService {
             importo: importo,
             saldo: nuovoSaldoMittente,
             categoriaMovimentoID: "66f180ef3af4b7f8c8ca9186", // ID della categoria per i bonifici, supponendo sia 1
-            descrizioneEstesa: `Bonifico disposto a favore di: ${ibanDestinatario}. ${causale}`
+            descrizioneEstesa: `Bonifico disposto a favore di: ${mittente.nomeTitolare}. ${causale}`
         });
         await movimentoMittente.save();
 
@@ -71,7 +71,7 @@ class BonificoService {
             importo: importo,
             saldo: nuovoSaldoDestinatario,
             categoriaMovimentoID: "66f180ef3af4b7f8c8ca9185", // ID della categoria per i bonifici ricevuti
-            descrizioneEstesa: `Bonifico disposto da: ${ibanMittente}. ${causale}`
+            descrizioneEstesa: `Bonifico disposto da: ${destinatario.nomeTitolare}. ${causale}`
         });
         await movimentoDestinatario.save();
 
