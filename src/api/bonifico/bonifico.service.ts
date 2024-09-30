@@ -121,19 +121,19 @@ class BonificoService {
   }
     async getIBANByUserId(userId: string): Promise<string> {
         try {
-          // Cerca l'utente senza popolare contoCorrenteID
+          // Cerca l'utente senza popolare contoCorrenteId
           const user = await UserModel.findById(userId);
 
           if (!user) {
             throw new Error('Utente non trovato');
           }
       
-          // Verifica se contoCorrenteID è presente e se è un ObjectId
+          // Verifica se contoCorrenteId è presente e se è un ObjectId
           if (!user.contoCorrenteId) {
             throw new Error('Conto corrente non associato a questo utente');
           }
       
-          // Se contoCorrenteID è un ObjectId, cerca il conto corrente nel database
+          // Se contoCorrenteId è un ObjectId, cerca il conto corrente nel database
           const contoCorrente = await ContoCorrenteModel.findById(user.contoCorrenteId);
           if (!contoCorrente) {
             throw new Error('Conto corrente non trovato');

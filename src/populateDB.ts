@@ -18,7 +18,7 @@ const CategoriaMovimenti = mongoose.model('CategoriaMovimenti', CategoriaMovimen
 
 // Schema per Movimenti Conto Corrente
 const MovimentiContoCorrenteSchema = new mongoose.Schema({
-  contoCorrenteID: mongoose.Schema.Types.ObjectId,
+  contoCorrenteId: mongoose.Schema.Types.ObjectId,
   data: Date,
   importo: Number,
   saldo: Number,
@@ -113,13 +113,13 @@ export async function populateDatabase() {
     ];
 
     // Funzione per inserire i movimenti con il saldo aggiornato
-    async function inserisciMovimenti(contoCorrenteID, movimenti) {
+    async function inserisciMovimenti(contoCorrenteId, movimenti) {
       let saldo = 0;
       for (let movimento of movimenti) {
         const categoriaMovimento = categorieInserite.find(cat => cat.NomeCategoria === movimento.categoria);
         saldo += movimento.importo;
         await MovimentiContoCorrente.create({
-          contoCorrenteID,
+          contoCorrenteId,
           data: new Date(),
           importo: movimento.importo,
           saldo,
