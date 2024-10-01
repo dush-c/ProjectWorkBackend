@@ -1,17 +1,21 @@
 import 'reflect-metadata';
 import app from './app';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+dotenv.config();
 
-// Replace this with your actual MongoDB URI from MongoDB Atlas
-const uri = 'mongodb+srv://giovannimeneghello:L2OefCiUbJ7xXaKk@clusteprimo.vdi3tck.mongodb.net/';
+const connectionString = process.env.DB_CONNECTION_STRING!;
+const port = process.env.PORT!;
+
+
 
 mongoose.set('debug', true);
-mongoose.connect(uri, {
+mongoose.connect(connectionString, {
 })
   .then(_ => {
     console.log('Connected to the online database');
-    app.listen(3000, () => {
-      console.log('Server listening on port 3000');
+    app.listen(port, () => {
+      console.log(`Server listening on port ${port}`);
     });
   })
   .catch(err => {

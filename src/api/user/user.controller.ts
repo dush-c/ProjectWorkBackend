@@ -30,7 +30,8 @@ export const confirmEmail = async (
 
   try {
     // Verify the token
-    const { userId } = jwt.verify(token, "cicciopasticcio") as JwtPayload;
+    const key = process.env.SECRET_MAIL_KEY;
+    const { userId } = jwt.verify(token, key!) as JwtPayload;
 
     // Find the user and confirm their email
     const user = await UserModel.findById(userId);

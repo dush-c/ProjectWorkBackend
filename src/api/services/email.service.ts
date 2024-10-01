@@ -4,7 +4,8 @@ import path from 'path';
 
 export const sendConfirmationEmail = async (email: string, userId: string) => {
 
-    const token = jwt.sign({ userId }, 'cicciopasticcio', { expiresIn: '1h' });
+  const port = process.env.SECRET_MAIL_KEY;
+    const token = jwt.sign({ userId }, port!, { expiresIn: '1h' });
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
